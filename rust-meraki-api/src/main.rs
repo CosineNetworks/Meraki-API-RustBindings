@@ -8,7 +8,7 @@ async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut headers = HeaderMap::new();
     headers.insert("Authorization", "".parse()?);
-    headers.insert("X-Cisco-Meraki-API-Key", "1ba26cd3769e4436b10e211a1d6ead5ef8025330".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/devices/{{serial}}/switch/ports")
@@ -26,7 +26,7 @@ async fn get_organizations() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("X-Cisco-Meraki-API-Key", "1ba26cd3769e4436b10e211a1d6ead5ef8025330".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/organizations")
@@ -45,10 +45,29 @@ async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut headers = HeaderMap::new();
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
-    headers.insert("X-Cisco-Meraki-API-Key", "1ba26cd3769e4436b10e211a1d6ead5ef8025330".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/switch/ports/statuses")
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+async fn ap_ssid_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
+
+    let request = client
+        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/wireless/status")
         .headers(headers);
 
     let response = request.send().await?;
@@ -64,6 +83,7 @@ async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>>
         "switch_ports" => get_switch_ports().await?,
         "organizations" => get_organizations().await?,
         "get_switch_status" => get_switch_status().await?,
+        "ap_ssid_status" => ap_ssid_status().await?,
         _ => println!("Invalid request."),
     }
     Ok(())
