@@ -3,12 +3,14 @@ use reqwest::header::HeaderMap;
 use reqwest::Client;
 use tokio::runtime::Builder;
 
+const MERAKI_API_KEY: &str = "ENTER API KEY HERE";
+
 async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
     headers.insert("Authorization", "".parse()?);
-    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/devices/{{serial}}/switch/ports")
@@ -26,7 +28,7 @@ async fn get_organizations() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/organizations")
@@ -45,7 +47,7 @@ async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut headers = HeaderMap::new();
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
-    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/switch/ports/statuses")
@@ -64,7 +66,7 @@ async fn ap_ssid_status() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut headers = HeaderMap::new();
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
-    headers.insert("X-Cisco-Meraki-API-Key", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let request = client
         .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/wireless/status")
