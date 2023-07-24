@@ -14,7 +14,47 @@ async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/{{serial}}/switch/ports")
+        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607762/switch/ports")
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List the switchports in an organization by switch
+async fn list_org_switchports() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let request = client
+        .get("https://api.meraki.com/api/v1/organizations/641762946900417676/switch/ports/bySwitch")
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return A Switch Port
+async fn switch_port_info() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "VRT-2207620607762".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let request = client
+        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607762/switch/ports/1")
         .headers(headers);
 
     let response = request.send().await?;
@@ -54,6 +94,26 @@ async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
 
     let request = client
         .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/switch/ports/statuses")
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return the packet counters for all the ports of a switch
+async fn switch_packet_count() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let request = client
+        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607762/switch/ports/statuses/packets")
         .headers(headers);
 
     let response = request.send().await?;
@@ -187,8 +247,11 @@ async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
 async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>> {
     match request {
         "switch_ports" => get_switch_ports().await?,
+        "list_org_switchports" => list_org_switchports().await?,
+        "switch_port_info" => switch_port_info().await?,
         "organizations" => get_organizations().await?,
         "get_switch_status" => get_switch_status().await?,
+        "switch_packet_count" => switch_packet_count().await?,
         "ap_ssid_status" => ap_ssid_status().await?,
         "identities" => identities().await?,
         "DHCP_subnet_info" => DHCP_subnet_info().await?,
