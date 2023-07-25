@@ -3,10 +3,10 @@ use reqwest::header::HeaderMap;
 use reqwest::Client;
 use tokio::runtime::Builder;
 
-const MERAKI_API_KEY: &str = "API KEY";
-const serial: &str = "DEVICE SERIAL";
-const organizationId: &str = "ORGANIZARIONID";
-const networkId: &str = "NETWORKID";
+const MERAKI_API_KEY: &str = "";
+const serial: &str = "";
+const organizationId: &str = "";
+const networkId: &str = "";
 
 // List the switch ports for a switch 
 async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
@@ -268,7 +268,7 @@ async fn delegated_prefix() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return prefixes assigned to all IPv6 enabled VLANs on an appliance.
-async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
+async fn list_devices() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -276,6 +276,116 @@ async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/prefixes/delegated/vlanAssignments", serial);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List the devices in an organization
+async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Show VPN status for networks in an organization
+async fn vpn_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/appliance/vpn/statuses", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Show VPN history stat for networks in an organization
+async fn vpn_history_stats() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/appliance/vpn/stats", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return The Firewall Rules For An Organizations Site To Site VPN
+async fn firewall_rules() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/appliance/vpn/vpnFirewallRules", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List The VLA Ns For An MX Network
+async fn list_vlans() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/appliance/vlans", networkId);
 
     let request = client
         .get(endpoint)
@@ -304,6 +414,11 @@ async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>>
         "device_performance" => device_performance().await?,
         "delegated_prefix" => delegated_prefix().await?,
         "vlan_prefix" => vlan_prefix().await?,
+        "list_devices" => list_devices().await?,
+        "vpn_status" => vpn_status().await?,
+        "vpn_history_stats" => vpn_history_stats().await?,
+        "firewall_rules" => firewall_rules().await?,
+        "list_vlans" => list_vlans().await?,
         _ => println!("Invalid request."),
     }
     Ok(())
