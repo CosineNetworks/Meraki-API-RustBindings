@@ -3,7 +3,10 @@ use reqwest::header::HeaderMap;
 use reqwest::Client;
 use tokio::runtime::Builder;
 
-const MERAKI_API_KEY: &str = "YOUR API KEY";
+const MERAKI_API_KEY: &str = "API KEY";
+const serial: &str = "DEVICE SERIAL";
+const organizationId: &str = "ORGANIZARIONID";
+const networkId: &str = "NETWORKID";
 
 // List the switch ports for a switch 
 async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,8 +16,10 @@ async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607762/switch/ports")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -33,8 +38,10 @@ async fn list_org_switchports() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/switch/ports/bySwitch", organizationId);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/organizations/641762946900417676/switch/ports/bySwitch")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -53,8 +60,10 @@ async fn switch_port_info() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607762".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports/1", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607762/switch/ports/1")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -92,8 +101,10 @@ async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports/statuses", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/switch/ports/statuses")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -112,8 +123,32 @@ async fn switch_packet_count() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports/statuses/packets", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607762/switch/ports/statuses/packets")
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Returns The Switch Network Settings
+async fn switch_network_settings() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/switch/settings", networkId);
+
+    let request = client
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -132,8 +167,10 @@ async fn ap_ssid_status() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/wireless/status", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/wireless/status")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -172,8 +209,10 @@ async fn DHCP_subnet_info() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/dhcp/subnets", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/appliance/dhcp/subnets")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -192,8 +231,10 @@ async fn device_performance() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/performance", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/appliance/performance")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -212,8 +253,10 @@ async fn delegated_prefix() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/prefixes/delegated", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/appliance/prefixes/delegated")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -232,8 +275,10 @@ async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
     headers.insert("Authorization", "VRT-2207620607704".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/prefixes/delegated/vlanAssignments", serial);
+
     let request = client
-        .get("https://api.meraki.com/api/v1/devices/VRT-2207620607704/appliance/prefixes/delegated/vlanAssignments")
+        .get(endpoint)
         .headers(headers);
 
     let response = request.send().await?;
@@ -246,12 +291,13 @@ async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
 
 async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>> {
     match request {
-        "switch_ports" => get_switch_ports().await?,
+        "get_switch_ports" => get_switch_ports().await?,
         "list_org_switchports" => list_org_switchports().await?,
         "switch_port_info" => switch_port_info().await?,
-        "organizations" => get_organizations().await?,
+        "get_organizations" => get_organizations().await?,
         "get_switch_status" => get_switch_status().await?,
         "switch_packet_count" => switch_packet_count().await?,
+        "switch_network_settings" => switch_network_settings().await?,
         "ap_ssid_status" => ap_ssid_status().await?,
         "identities" => identities().await?,
         "DHCP_subnet_info" => DHCP_subnet_info().await?,
