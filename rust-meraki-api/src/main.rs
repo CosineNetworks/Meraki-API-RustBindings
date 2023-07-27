@@ -3,11 +3,11 @@ use reqwest::header::HeaderMap;
 use reqwest::Client;
 use tokio::runtime::Builder;
 
-const MERAKI_API_KEY: &str = "1ba26cd3769e4436b10e211a1d6ead5ef8025330";
-const serial: &str = "VRT-2207620607762";
-const organizationId: &str = "641762946900417676";
-const networkId: &str = "N_641762946900966291";
-const SSID_Num: &str = "1";
+const MERAKI_API_KEY: &str = "";
+const serial: &str = "";
+const organizationId: &str = "";
+const networkId: &str = "";
+const SSID_Num: &str = "";
 
 // Create A Network
 async fn create_network() -> Result<(), Box<dyn std::error::Error>> {
