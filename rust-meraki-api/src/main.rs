@@ -51,7 +51,7 @@ async fn create_network() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-// Create A Network
+// Combine Multiple Networks Into A Single Network
 async fn combine_networks() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
@@ -73,6 +73,49 @@ async fn combine_networks() -> Result<(), Box<dyn std::error::Error>> {
     let json: serde_json::Value = serde_json::from_str(&data)?;
 
     let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/networks/combine", organizationId);
+
+    let request = client
+        .post(endpoint)
+        .body(data)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Create A New Organization
+async fn create_organization() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("Content-Type", "application/json".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    // Change to your settings
+    let data = r#"{
+        "name": "<string>",
+        "management": {
+            "details": [
+                {
+                    "name": "<string>",
+                    "value": "<string>"
+                },
+                {
+                    "name": "<string>",
+                    "value": "<string>"
+                }
+            ]
+        }
+    }"#;
+
+    let json: serde_json::Value = serde_json::from_str(&data)?;
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations");
 
     let request = client
         .post(endpoint)
@@ -683,6 +726,7 @@ async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>>
     match request {
         "create_network" => create_network().await?,
         "combine_networks" => combine_networks().await?,
+        "create_organization" => create_organization().await?,
         "get_switch_ports" => get_switch_ports().await?,
         "list_org_switchports" => list_org_switchports().await?,
         "switch_port_info" => switch_port_info().await?,
