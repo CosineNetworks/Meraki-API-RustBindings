@@ -3,11 +3,89 @@ use reqwest::header::HeaderMap;
 use reqwest::Client;
 use tokio::runtime::Builder;
 
-const MERAKI_API_KEY: &str = "";
-const serial: &str = "";
-const organizationId: &str = "";
-const networkId: &str = "";
-const SSID_Num: &str = "";
+const MERAKI_API_KEY: &str = "1ba26cd3769e4436b10e211a1d6ead5ef8025330";
+const serial: &str = "VRT-2207620607762";
+const organizationId: &str = "641762946900417676";
+const networkId: &str = "N_641762946900966291";
+const SSID_Num: &str = "1";
+
+// Create A Network
+async fn create_network() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("Content-Type", "application/json".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    // Change to your settings
+    let data = r#"{
+        "name": "<string>",
+        "productTypes": [
+            "<string>",
+            "<string>"
+        ],
+        "tags": [
+            "<string>",
+            "<string>"
+        ],
+        "timeZone": "<string>",
+        "copyFromNetworkId": "<string>",
+        "notes": "<string>"
+    }"#;
+
+    let json: serde_json::Value = serde_json::from_str(&data)?;
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/networks", organizationId);
+
+    let request = client
+        .post(endpoint)
+        .body(data)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Create A Network
+async fn combine_networks() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("Content-Type", "application/json".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    // Change to your settings
+    let data = r#"{
+        "name": "<string>",
+        "networkIds": [
+            "<string>",
+            "<string>"
+        ],
+        "enrollmentString": "<string>"
+    }"#;
+
+    let json: serde_json::Value = serde_json::from_str(&data)?;
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/networks/combine", organizationId);
+
+    let request = client
+        .post(endpoint)
+        .body(data)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
 
 // List the switch ports for a switch 
 async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
@@ -290,6 +368,48 @@ async fn list_devices() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+// Update The Attributes Of A Device
+async fn update_device_attributes() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("Content-Type", "application/json".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    // Change to your settings
+    let data = r#"{
+        "name": "<string>",
+        "tags": [
+            "<string>",
+            "<string>"
+        ],
+        "lat": "<float>",
+        "lng": "<float>",
+        "address": "<string>",
+        "notes": "<string>",
+        "moveMapMarker": "<boolean>",
+        "switchProfileId": "<string>",
+        "floorPlanId": "<string>"
+    }"#;
+
+    let json: serde_json::Value = serde_json::from_str(&data)?;
+
+    let endpoint = format!("https://api.meraki.com/api/v1/devices/{}", serial);
+
+    let request = client
+        .put(endpoint)
+        .body(data)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
 // List the devices in an organization
 async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
@@ -535,11 +655,11 @@ async fn update_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
 
     // Change to your settings
     let data = r#"{
-        "meshingEnabled": true,
-        "ipv6BridgeEnabled": true,
-        "locationAnalyticsEnabled": true,
-        "upgradeStrategy": "minimizeClientDowntime",
-        "ledLightsOn": true
+        "meshingEnabled": "<boolean>",
+        "ipv6BridgeEnabled": "<boolean>",
+        "locationAnalyticsEnabled": "<boolean>",
+        "upgradeStrategy": "<string>",
+        "ledLightsOn": "<boolean>"
     }"#;
 
     let json: serde_json::Value = serde_json::from_str(&data)?;
@@ -561,6 +681,8 @@ async fn update_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
 
 async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>> {
     match request {
+        "create_network" => create_network().await?,
+        "combine_networks" => combine_networks().await?,
         "get_switch_ports" => get_switch_ports().await?,
         "list_org_switchports" => list_org_switchports().await?,
         "switch_port_info" => switch_port_info().await?,
@@ -575,6 +697,7 @@ async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>>
         "delegated_prefix" => delegated_prefix().await?,
         "vlan_prefix" => vlan_prefix().await?,
         "list_devices" => list_devices().await?,
+        "update_device_attributes" => update_device_attributes().await?,
         "vpn_status" => vpn_status().await?,
         "vpn_history_stats" => vpn_history_stats().await?,
         "list_ssid_vpn_settings" => list_ssid_vpn_settings().await?,
