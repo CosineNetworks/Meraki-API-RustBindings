@@ -7,6 +7,7 @@ const MERAKI_API_KEY: &str = "";
 const serial: &str = "";
 const organizationId: &str = "";
 const networkId: &str = "";
+const SSID_Num: &str = "";
 
 // List the switch ports for a switch 
 async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
@@ -355,6 +356,86 @@ async fn vpn_history_stats() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+// List The VPN Settings For The SSID
+async fn list_ssid_vpn_settings() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/wireless/ssids/{}/vpn", networkId, SSID_Num);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Update The VPN Settings For The SSID
+async fn update_ssid_vpn_settings() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("Content-Type", "application/json".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    // Change to your settings
+    let data = r#"{
+        "concentrator": {
+            "networkId": "<string>",
+            "vlanId": "<integer>"
+        },
+        "splitTunnel": {
+            "enabled": "<boolean>",
+            "rules": [
+                {
+                    "destCidr": "<string>",
+                    "policy": "<string>",
+                    "protocol": "<string>",
+                    "destPort": "<string>",
+                    "comment": "<string>"
+                },
+                {
+                    "destCidr": "<string>",
+                    "policy": "<string>",
+                    "protocol": "<string>",
+                    "destPort": "<string>",
+                    "comment": "<string>"
+                }
+            ]
+        },
+        "failover": {
+            "requestIp": "<string>",
+            "heartbeatInterval": "<integer>",
+            "idleTimeout": "<integer>"
+        }
+    }"#;  
+
+    let json: serde_json::Value = serde_json::from_str(&data)?;
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/wireless/ssids/{}/vpn", networkId, SSID_Num);
+
+    let request = client
+        .put(endpoint)
+        .body(data)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
 // Return The Firewall Rules For An Organizations Site To Site VPN
 async fn firewall_rules() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
@@ -399,6 +480,85 @@ async fn list_vlans() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+// List the uplink status of every Meraki MX and Z series appliances in the organization
+async fn list_uplink_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/appliance/uplink/statuses", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return The Wireless Settings For A Network
+async fn return_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/wireless/settings", networkId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Update The Wireless Settings For A Network
+async fn update_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("Content-Type", "application/json".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    // Change to your settings
+    let data = r#"{
+        "meshingEnabled": true,
+        "ipv6BridgeEnabled": true,
+        "locationAnalyticsEnabled": true,
+        "upgradeStrategy": "minimizeClientDowntime",
+        "ledLightsOn": true
+    }"#;
+
+    let json: serde_json::Value = serde_json::from_str(&data)?;
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/wireless/settings", networkId);
+
+    let request = client
+        .put(endpoint)
+        .body(data)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
 async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>> {
     match request {
         "get_switch_ports" => get_switch_ports().await?,
@@ -417,8 +577,13 @@ async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>>
         "list_devices" => list_devices().await?,
         "vpn_status" => vpn_status().await?,
         "vpn_history_stats" => vpn_history_stats().await?,
+        "list_ssid_vpn_settings" => list_ssid_vpn_settings().await?,
+        "update_ssid_vpn_settings" => update_ssid_vpn_settings().await?,
         "firewall_rules" => firewall_rules().await?,
         "list_vlans" => list_vlans().await?,
+        "list_uplink_status" => list_uplink_status().await?,
+        "return_wireless_settings" => return_wireless_settings().await?,
+        "update_wireless_settings" => update_wireless_settings().await?,
         _ => println!("Invalid request."),
     }
     Ok(())
