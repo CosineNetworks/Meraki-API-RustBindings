@@ -179,7 +179,7 @@ async fn switch_port_info() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607762".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports/1", serial);
@@ -220,7 +220,7 @@ async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports/statuses", serial);
@@ -242,7 +242,7 @@ async fn switch_packet_count() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/switch/ports/statuses/packets", serial);
@@ -264,7 +264,7 @@ async fn switch_network_settings() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/switch/settings", networkId);
@@ -286,7 +286,7 @@ async fn ap_ssid_status() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/wireless/status", serial);
@@ -328,7 +328,7 @@ async fn DHCP_subnet_info() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/dhcp/subnets", serial);
@@ -350,7 +350,7 @@ async fn device_performance() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/performance", serial);
@@ -372,7 +372,7 @@ async fn delegated_prefix() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/prefixes/delegated", serial);
@@ -394,7 +394,7 @@ async fn list_devices() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "VRT-2207620607704".parse()?);
+    headers.insert("Authorization", "".parse()?);
     headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
 
     let endpoint = format!("https://api.meraki.com/api/v1/devices/{}/appliance/prefixes/delegated/vlanAssignments", serial);
@@ -722,6 +722,226 @@ async fn update_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+// Get average channel utilization across all bands for all networks in the organization
+async fn organization_average_channel_utilization() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/wireless/devices/channelUtilization/byNetwork", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return an overview of current device statuses
+async fn current_device_statuses() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/statuses/overview", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List The Status Of Every Meraki Device In The Organization
+async fn all_device_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/statuses", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List the current uplink addresses for devices in an organization.
+async fn current_uplink_addresses() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/uplinks/addresses/byDevice", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return the uplink loss and latency for every MX in the organization from at latest 2 minutes ago
+async fn uplink_loss_latency() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/uplinksLossAndLatency", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List the provisioning statuses information for devices in an organization.
+async fn list_provisioning_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/provisioning/statuses", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List the power status information for devices in an organization
+async fn list_organization_devices_power_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/powerModules/statuses/byDevice", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// List the availability information for devices in an organization
+async fn list_availability_information() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices/availabilities", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Endpoint to see power status for wireless devices
+async fn wireless_power_status() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/wireless/devices/ethernet/statuses", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
+// Return average wireless latency over time for a network, device, or network client
+async fn average_wireless_latency() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/networks/{}/wireless/latencyHistory", networkId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
 async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>> {
     match request {
         "create_network" => create_network().await?,
@@ -751,6 +971,16 @@ async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>>
         "list_uplink_status" => list_uplink_status().await?,
         "return_wireless_settings" => return_wireless_settings().await?,
         "update_wireless_settings" => update_wireless_settings().await?,
+        "organization_average_channel_utilization" => organization_average_channel_utilization().await?,
+        "current_device_statuses" => current_device_statuses().await?,
+        "all_device_status" => all_device_status().await?,
+        "current_uplink_addresses" => current_uplink_addresses().await?,
+        "uplink_loss_latency" => uplink_loss_latency().await?,
+        "list_provisioning_status" => list_provisioning_status().await?,
+        "list_organization_devices_power_status" => list_organization_devices_power_status().await?,
+        "list_availability_information" => list_availability_information().await?,
+        "wireless_power_status" => wireless_power_status().await?,
+        "average_wireless_latency" => average_wireless_latency().await?,
         _ => println!("Invalid request."),
     }
     Ok(())
