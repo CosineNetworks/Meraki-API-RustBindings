@@ -4,14 +4,14 @@ Rust bindings for the Cisco Meraki Dashboard API
 https://developer.cisco.com/meraki/api-v1/
 
 Current bindings:  
-create_network(): [Create Organization Network](https://developer.cisco.com/meraki/api-v1/create-organization-network/)  
-combine_networks(): [Combine Multiple Networks Into A Single Network](https://developer.cisco.com/meraki/api-v1/combine-organization-networks/)  
-create_organization(): [Create A New Organization](https://developer.cisco.com/meraki/api-v1/create-organization/)  
-get_switch_ports(): []()  
-list_org_switchports(): []()  
-switch_port_info(): []()  
-get_organizations(): []()  
-get_switch_status(): []()  
+createOrganizationNetwork(): [Create Organization Network](https://developer.cisco.com/meraki/api-v1/create-organization-network/)  
+combineOrganizationNetworks(): [Combine Multiple Networks Into A Single Network](https://developer.cisco.com/meraki/api-v1/combine-organization-networks/)  
+createOrganization(): [Create A New Organization](https://developer.cisco.com/meraki/api-v1/create-organization/)  
+getDeviceSwitchPorts(): [List the switch ports for a switch](https://developer.cisco.com/meraki/api-v1/get-device-switch-ports/)  
+getOrganizationSwitchPortsBySwitch(): [List the switchports in an organization by switch](https://developer.cisco.com/meraki/api-v1/get-organization-switch-ports-by-switch/)  
+getDeviceSwitchPort(): [Return A Switch Port](https://developer.cisco.com/meraki/api-v1/get-device-switch-port/)  
+getOrganizations(): [List organizations](https://developer.cisco.com/meraki/api-v1/get-organizations/)  
+getDeviceSwitchPortsStatuses(): [Return The Status For All The Ports Of A Switch](https://developer.cisco.com/meraki/api-v1/get-device-switch-ports-statuses/)  
 switch_packet_count(): []()  
 switch_network_settings(): []()  
 ap_ssid_status(): []()  
