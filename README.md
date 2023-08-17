@@ -4,7 +4,7 @@ Rust bindings for the Cisco Meraki Dashboard API
 https://developer.cisco.com/meraki/api-v1/
 
 Current bindings:  
-createOrganizationNetwork(): [Create Organization Network](https://developer.cisco.com/meraki/api-v1/create-organization-network/)  
+* createOrganizationNetwork(): [Create Organization Network](https://developer.cisco.com/meraki/api-v1/create-organization-network/)  
 combineOrganizationNetworks(): [Combine Multiple Networks Into A Single Network](https://developer.cisco.com/meraki/api-v1/combine-organization-networks/)  
 createOrganization(): [Create A New Organization](https://developer.cisco.com/meraki/api-v1/create-organization/)  
 getDeviceSwitchPorts(): [List the switch ports for a switch](https://developer.cisco.com/meraki/api-v1/get-device-switch-ports/)  
