@@ -10,7 +10,7 @@ const networkId: &str = "";
 const SSID_Num: &str = "";
 
 // Create A Network
-async fn create_network() -> Result<(), Box<dyn std::error::Error>> {
+async fn createOrganizationNetwork() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -52,7 +52,7 @@ async fn create_network() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Combine Multiple Networks Into A Single Network
-async fn combine_networks() -> Result<(), Box<dyn std::error::Error>> {
+async fn combineOrganizationNetworks() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -88,7 +88,7 @@ async fn combine_networks() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Create A New Organization
-async fn create_organization() -> Result<(), Box<dyn std::error::Error>> {
+async fn createOrganization() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -131,7 +131,7 @@ async fn create_organization() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List the switch ports for a switch 
-async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceSwitchPorts() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -153,7 +153,7 @@ async fn get_switch_ports() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List the switchports in an organization by switch
-async fn list_org_switchports() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationSwitchPortsBySwitch() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -175,7 +175,7 @@ async fn list_org_switchports() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return A Switch Port
-async fn switch_port_info() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceSwitchPort() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -197,7 +197,7 @@ async fn switch_port_info() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List organizations
-async fn get_organizations() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizations() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -215,8 +215,30 @@ async fn get_organizations() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+// List the devices in an organization
+async fn getOrganizationDevices() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::builder().build()?;
+
+    let mut headers = HeaderMap::new();
+    headers.insert("Authorization", "".parse()?);
+    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
+
+    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices", organizationId);
+
+    let request = client
+        .get(endpoint)
+        .headers(headers);
+
+    let response = request.send().await?;
+    let body = response.text().await?;
+
+    println!("{}", body);
+
+    Ok(())
+}
+
 // Return The Status For All The Ports Of A Switch
-async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceSwitchPortsStatuses() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -238,7 +260,7 @@ async fn get_switch_status() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return the packet counters for all the ports of a switch
-async fn switch_packet_count() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceSwitchPortsStatusesPackets() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -260,7 +282,7 @@ async fn switch_packet_count() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Returns The Switch Network Settings
-async fn switch_network_settings() -> Result<(), Box<dyn std::error::Error>> {
+async fn getNetworkSwitchSettings() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -282,7 +304,7 @@ async fn switch_network_settings() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return the SSID statuses of an access point
-async fn ap_ssid_status() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceWirelessStatus() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -304,7 +326,7 @@ async fn ap_ssid_status() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Returns the identity of the current user.
-async fn identities() -> Result<(), Box<dyn std::error::Error>> {
+async fn getAdministeredIdentitiesMe() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -324,7 +346,7 @@ async fn identities() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return the DHCP subnet information for an appliance
-async fn DHCP_subnet_info() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceApplianceDhcpSubnets() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -346,7 +368,7 @@ async fn DHCP_subnet_info() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return the performance score for a single MX
-async fn device_performance() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceAppliancePerformance() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -368,7 +390,7 @@ async fn device_performance() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return Current Delegated IPv6 Prefixes On An Appliance
-async fn delegated_prefix() -> Result<(), Box<dyn std::error::Error>> {
+async fn getDeviceAppliancePrefixesDelegated() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -389,8 +411,8 @@ async fn delegated_prefix() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-// Return prefixes assigned to all IPv6 enabled VLANs on an appliance.
-async fn list_devices() -> Result<(), Box<dyn std::error::Error>> {
+// Return prefixes assigned to all IPv6 enabled VLANs on an appliance
+async fn getDeviceAppliancePrefixesDelegatedVlanAssignments() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -412,7 +434,7 @@ async fn list_devices() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Update The Attributes Of A Device
-async fn update_device_attributes() -> Result<(), Box<dyn std::error::Error>> {
+async fn updateDevice() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -453,30 +475,8 @@ async fn update_device_attributes() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-// List the devices in an organization
-async fn vlan_prefix() -> Result<(), Box<dyn std::error::Error>> {
-    let client = Client::builder().build()?;
-
-    let mut headers = HeaderMap::new();
-    headers.insert("Authorization", "".parse()?);
-    headers.insert("X-Cisco-Meraki-API-Key", MERAKI_API_KEY.parse()?);
-
-    let endpoint = format!("https://api.meraki.com/api/v1/organizations/{}/devices", organizationId);
-
-    let request = client
-        .get(endpoint)
-        .headers(headers);
-
-    let response = request.send().await?;
-    let body = response.text().await?;
-
-    println!("{}", body);
-
-    Ok(())
-}
-
 // Show VPN status for networks in an organization
-async fn vpn_status() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationApplianceVpnStatuses() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -498,7 +498,7 @@ async fn vpn_status() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Show VPN history stat for networks in an organization
-async fn vpn_history_stats() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationApplianceVpnStats() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -520,7 +520,7 @@ async fn vpn_history_stats() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List The VPN Settings For The SSID
-async fn list_ssid_vpn_settings() -> Result<(), Box<dyn std::error::Error>> {
+async fn getNetworkWirelessSsidVpn() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -542,7 +542,7 @@ async fn list_ssid_vpn_settings() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Update The VPN Settings For The SSID
-async fn update_ssid_vpn_settings() -> Result<(), Box<dyn std::error::Error>> {
+async fn updateNetworkWirelessSsidVpn() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -600,7 +600,7 @@ async fn update_ssid_vpn_settings() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return The Firewall Rules For An Organizations Site To Site VPN
-async fn firewall_rules() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationApplianceVpnVpnFirewallRules() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -622,7 +622,7 @@ async fn firewall_rules() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List The VLA Ns For An MX Network
-async fn list_vlans() -> Result<(), Box<dyn std::error::Error>> {
+async fn getNetworkApplianceVlans() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -644,7 +644,7 @@ async fn list_vlans() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List the uplink status of every Meraki MX and Z series appliances in the organization
-async fn list_uplink_status() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationApplianceUplinkStatuses() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -666,7 +666,7 @@ async fn list_uplink_status() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return The Wireless Settings For A Network
-async fn return_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
+async fn getNetworkWirelessSettings() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -688,7 +688,7 @@ async fn return_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Update The Wireless Settings For A Network
-async fn update_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
+async fn updateNetworkWirelessSettings() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -723,7 +723,7 @@ async fn update_wireless_settings() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Get average channel utilization across all bands for all networks in the organization
-async fn organization_average_channel_utilization() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationWirelessDevicesChannelUtilizationByNetwork() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -745,7 +745,7 @@ async fn organization_average_channel_utilization() -> Result<(), Box<dyn std::e
 }
 
 // Return an overview of current device statuses
-async fn current_device_statuses() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationDevicesStatusesOverview() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -767,7 +767,7 @@ async fn current_device_statuses() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List The Status Of Every Meraki Device In The Organization
-async fn all_device_status() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationDevicesStatuses() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -788,8 +788,8 @@ async fn all_device_status() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-// List the current uplink addresses for devices in an organization.
-async fn current_uplink_addresses() -> Result<(), Box<dyn std::error::Error>> {
+// List the current uplink addresses for devices in an organization
+async fn getOrganizationDevicesUplinksAddressesByDevice() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -811,7 +811,7 @@ async fn current_uplink_addresses() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return the uplink loss and latency for every MX in the organization from at latest 2 minutes ago
-async fn uplink_loss_latency() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationDevicesUplinksLossAndLatency() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -832,8 +832,8 @@ async fn uplink_loss_latency() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-// List the provisioning statuses information for devices in an organization.
-async fn list_provisioning_status() -> Result<(), Box<dyn std::error::Error>> {
+// List the provisioning statuses information for devices in an organization
+async fn getOrganizationDevicesProvisioningStatuses() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -855,7 +855,7 @@ async fn list_provisioning_status() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // List the power status information for devices in an organization
-async fn list_organization_devices_power_status() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationDevicesPowerModulesStatusesByDevice() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -877,7 +877,7 @@ async fn list_organization_devices_power_status() -> Result<(), Box<dyn std::err
 }
 
 // List the availability information for devices in an organization
-async fn list_availability_information() -> Result<(), Box<dyn std::error::Error>> {
+async fn getOrganizationDevicesAvailabilities() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -898,8 +898,8 @@ async fn list_availability_information() -> Result<(), Box<dyn std::error::Error
     Ok(())
 }
 
-// Endpoint to see power status for wireless devices
-async fn wireless_power_status() -> Result<(), Box<dyn std::error::Error>> {
+// List the most recent Ethernet link speed, duplex, aggregation and power mode and status information for wireless devices
+async fn getOrganizationWirelessDevicesEthernetStatuses() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -921,7 +921,7 @@ async fn wireless_power_status() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 // Return average wireless latency over time for a network, device, or network client
-async fn average_wireless_latency() -> Result<(), Box<dyn std::error::Error>> {
+async fn getNetworkWirelessLatencyHistory() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::builder().build()?;
 
     let mut headers = HeaderMap::new();
@@ -944,43 +944,43 @@ async fn average_wireless_latency() -> Result<(), Box<dyn std::error::Error>> {
 
 async fn handle_request(request: &str) -> Result<(), Box<dyn std::error::Error>> {
     match request {
-        "create_network" => create_network().await?,
-        "combine_networks" => combine_networks().await?,
-        "create_organization" => create_organization().await?,
-        "get_switch_ports" => get_switch_ports().await?,
-        "list_org_switchports" => list_org_switchports().await?,
-        "switch_port_info" => switch_port_info().await?,
-        "get_organizations" => get_organizations().await?,
-        "get_switch_status" => get_switch_status().await?,
-        "switch_packet_count" => switch_packet_count().await?,
-        "switch_network_settings" => switch_network_settings().await?,
-        "ap_ssid_status" => ap_ssid_status().await?,
-        "identities" => identities().await?,
-        "DHCP_subnet_info" => DHCP_subnet_info().await?,
-        "device_performance" => device_performance().await?,
-        "delegated_prefix" => delegated_prefix().await?,
-        "vlan_prefix" => vlan_prefix().await?,
-        "list_devices" => list_devices().await?,
-        "update_device_attributes" => update_device_attributes().await?,
-        "vpn_status" => vpn_status().await?,
-        "vpn_history_stats" => vpn_history_stats().await?,
-        "list_ssid_vpn_settings" => list_ssid_vpn_settings().await?,
-        "update_ssid_vpn_settings" => update_ssid_vpn_settings().await?,
-        "firewall_rules" => firewall_rules().await?,
-        "list_vlans" => list_vlans().await?,
-        "list_uplink_status" => list_uplink_status().await?,
-        "return_wireless_settings" => return_wireless_settings().await?,
-        "update_wireless_settings" => update_wireless_settings().await?,
-        "organization_average_channel_utilization" => organization_average_channel_utilization().await?,
-        "current_device_statuses" => current_device_statuses().await?,
-        "all_device_status" => all_device_status().await?,
-        "current_uplink_addresses" => current_uplink_addresses().await?,
-        "uplink_loss_latency" => uplink_loss_latency().await?,
-        "list_provisioning_status" => list_provisioning_status().await?,
-        "list_organization_devices_power_status" => list_organization_devices_power_status().await?,
-        "list_availability_information" => list_availability_information().await?,
-        "wireless_power_status" => wireless_power_status().await?,
-        "average_wireless_latency" => average_wireless_latency().await?,
+        "createOrganizationNetwork" => createOrganizationNetwork().await?,
+        "combineOrganizationNetworks" => combineOrganizationNetworks().await?,
+        "createOrganization" => createOrganization().await?,
+        "getDeviceSwitchPorts" => getDeviceSwitchPorts().await?,
+        "getOrganizationSwitchPortsBySwitch" => getOrganizationSwitchPortsBySwitch().await?,
+        "getDeviceSwitchPort" => getDeviceSwitchPort().await?,
+        "getOrganizations" => getOrganizations().await?,
+        "getOrganizationDevices" => getOrganizationDevices().await?,
+        "getDeviceSwitchPortsStatuses" => getDeviceSwitchPortsStatuses().await?,
+        "getDeviceSwitchPortsStatusesPackets" => getDeviceSwitchPortsStatusesPackets().await?,
+        "getNetworkSwitchSettings" => getNetworkSwitchSettings().await?,
+        "getDeviceWirelessStatus" => getDeviceWirelessStatus().await?,
+        "getAdministeredIdentitiesMe" => getAdministeredIdentitiesMe().await?,
+        "getDeviceApplianceDhcpSubnets" => getDeviceApplianceDhcpSubnets().await?,
+        "getDeviceAppliancePerformance" => getDeviceAppliancePerformance().await?,
+        "getDeviceAppliancePrefixesDelegated" => getDeviceAppliancePrefixesDelegated().await?,
+        "getDeviceAppliancePrefixesDelegatedVlanAssignments" => getDeviceAppliancePrefixesDelegatedVlanAssignments().await?,
+        "updateDevice" => updateDevice().await?,
+        "getOrganizationApplianceVpnStatuses" => getOrganizationApplianceVpnStatuses().await?,
+        "getOrganizationApplianceVpnStats" => getOrganizationApplianceVpnStats().await?,
+        "getNetworkWirelessSsidVpn" => getNetworkWirelessSsidVpn().await?,
+        "updateNetworkWirelessSsidVpn" => updateNetworkWirelessSsidVpn().await?,
+        "getOrganizationApplianceVpnVpnFirewallRules" => getOrganizationApplianceVpnVpnFirewallRules().await?,
+        "getNetworkApplianceVlans" => getNetworkApplianceVlans().await?,
+        "getOrganizationApplianceUplinkStatuses" => getOrganizationApplianceUplinkStatuses().await?,
+        "getNetworkWirelessSettings" => getNetworkWirelessSettings().await?,
+        "updateNetworkWirelessSettings" => updateNetworkWirelessSettings().await?,
+        "getOrganizationWirelessDevicesChannelUtilizationByNetwork" => getOrganizationWirelessDevicesChannelUtilizationByNetwork().await?,
+        "getOrganizationDevicesStatusesOverview" => getOrganizationDevicesStatusesOverview().await?,
+        "getOrganizationDevicesStatuses" => getOrganizationDevicesStatuses().await?,
+        "getOrganizationDevicesUplinksAddressesByDevice" => getOrganizationDevicesUplinksAddressesByDevice().await?,
+        "getOrganizationDevicesUplinksLossAndLatency" => getOrganizationDevicesUplinksLossAndLatency().await?,
+        "getOrganizationDevicesProvisioningStatuses" => getOrganizationDevicesProvisioningStatuses().await?,
+        "getOrganizationDevicesPowerModulesStatusesByDevice" => getOrganizationDevicesPowerModulesStatusesByDevice().await?,
+        "getOrganizationDevicesAvailabilities" => getOrganizationDevicesAvailabilities().await?,
+        "getOrganizationWirelessDevicesEthernetStatuses" => getOrganizationWirelessDevicesEthernetStatuses().await?,
+        "getNetworkWirelessLatencyHistory" => getNetworkWirelessLatencyHistory().await?,
         _ => println!("Invalid request."),
     }
     Ok(())
