@@ -27,7 +27,7 @@ getOrganizationApplianceVpnStats(): [Show VPN history stat for networks in an or
 getNetworkWirelessSsidVpn(): [List The VPN Settings For The SSID](https://developer.cisco.com/meraki/api-v1/get-network-wireless-ssid-vpn/)  
 updateNetworkWirelessSsidVpn(): [Update The VPN Settings For The SSID](https://developer.cisco.com/meraki/api-v1/update-network-wireless-ssid-vpn/)  
 getOrganizationApplianceVpnVpnFirewallRules(): [Return The Firewall Rules For An Organizations Site To Site VPN](https://developer.cisco.com/meraki/api-v1/get-organization-appliance-vpn-vpn-firewall-rules/)  
-getNetworkApplianceVlans(): [List The VLA Ns For An MX Network](https://developer.cisco.com/meraki/api-v1/get-network-appliance-vlans/)  
+getNetworkApplianceVlans(): [List The VLANs For An MX Network](https://developer.cisco.com/meraki/api-v1/get-network-appliance-vlans/)  
 getOrganizationApplianceUplinkStatuses(): [List the uplink status of every Meraki MX and Z series appliances in the organization](https://developer.cisco.com/meraki/api-v1/get-organization-appliance-uplink-statuses/)  
 getNetworkWirelessSettings(): [Return The Wireless Settings For A Network](https://developer.cisco.com/meraki/api-v1/get-network-wireless-settings/)  
 updateNetworkWirelessSettings(): [Update The Wireless Settings For A Network](https://developer.cisco.com/meraki/api-v1/update-network-wireless-settings/)  
