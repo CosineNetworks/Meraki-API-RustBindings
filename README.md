@@ -5,7 +5,7 @@ https://developer.cisco.com/meraki/api-v1/
 
 Current bindings:  
 create_network(): [Create Organization Network](https://developer.cisco.com/meraki/api-v1/create-organization-network/)  
-combine_networks(): [Combine Multiple Networks Into A Single Network](https://developer.cisco.com/meraki/api-v1/combine-organization-networks/)
+combine_networks(): [Combine Multiple Networks Into A Single Network](https://developer.cisco.com/meraki/api-v1/combine-organization-networks/)  
 create_organization():
 get_switch_ports():
 list_org_switchports():
